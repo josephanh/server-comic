@@ -1,7 +1,7 @@
 
 const mangaService = require('./mangaService');
 
-const getAllNews = async () => {
+const getAllManga = async () => {
     return await mangaService.getAllManga();
 }
 
@@ -30,4 +30,4 @@ const getMagaById = async (id) => {
 }
 
 
-module.exports = { getAllNews, deleteManga, addNewManga, getMagaById}
+module.exports = { getAllManga, deleteManga, addNewManga, getMagaById}

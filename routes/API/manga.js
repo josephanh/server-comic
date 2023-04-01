@@ -21,7 +21,7 @@ router.get('/', [authenApp], async (req, res, next) => {
 
 router.get('/web-sever-no-token', async (req, res, next) => {
     try {
-        const mangas = await mangaController.getAllNews();
+        const mangas = await mangaController.getAllManga();
         res.status(200).json({ mangas });
     } catch (error) {
         res.status(400).json({});

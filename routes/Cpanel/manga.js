@@ -10,7 +10,7 @@ const auth = require('../../middleware/Authen');
 
 // http://localhost:3000/cpanel/manga/data-table
 router.get('/data-table', [auth.authenWeb], async function (req, res, next) {
-    const resuflt = await mangaController.getAllNews();
+    const resuflt = await mangaController.getAllManga();
     console.log(resuflt);
     // hiển thị trang bảng dữ liệu
     res.render('manga/data-table', { data: resuflt })
