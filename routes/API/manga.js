@@ -18,6 +18,16 @@ router.get('/', [authenApp], async (req, res, next) => {
         res.status(400).json({});
     }
 })
+
+router.get('/web-sever-no-token', async (req, res, next) => {
+    try {
+        const mangas = await mangaController.getAllNews();
+        res.status(200).json({ mangas });
+    } catch (error) {
+        res.status(400).json({});
+    }
+})
+
 // lấy sản phẩm theo ID
 router.get('/:id', async (req, res, next) => {
     try {
