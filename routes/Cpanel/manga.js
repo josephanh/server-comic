@@ -8,9 +8,10 @@ const uploadFile = require('../../middleware/uploadFile');
 const CONFIG = require('../../config/config');
 const auth = require('../../middleware/Authen');
 
-// http://localhost:3000/cpanel/manga/table/data-table
+// http://localhost:3000/cpanel/manga/data-table
 router.get('/data-table', [auth.authenWeb], async function (req, res, next) {
     const resuflt = await mangaController.getAllNews();
+    console.log(resuflt);
     // hiển thị trang bảng dữ liệu
     res.render('manga/data-table', { data: resuflt })
 })
