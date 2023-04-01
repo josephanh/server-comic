@@ -23,7 +23,7 @@ router.post('/form-edit/new', [auth.authenWeb, uploadFile.single('image'),], asy
         let { body, file } = req;
         if (file) {
             // let image = `${CONFIG.CONSTANTS.config}:3000/images/${file.filename}`;
-            let image = `https://dashboard.heroku.com/images/${file.filename}`;
+            let image = `https://sever-app-manga.herokuapp.com/images/${file.filename}`;
             body = { ...body, image: image }
         }
         const { title, author, describe, image, category } = body;
