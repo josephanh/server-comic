@@ -3,7 +3,10 @@ const mangaModel = require("./mangaModel");
 
 const getAllManga = async () => {
     try {
-        return mangaModel.find();
+        // console.log("Tới đây rồi trước khi");
+        var result = await mangaModel.find();
+        // console.log("Tới đây rồi ",result);  
+        return result; 
     } catch (error) {
         console.log('getAllNews', error);
         throw error;

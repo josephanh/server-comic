@@ -38,8 +38,8 @@ app.use(session({
 //   useUnifiedTopology: true
 // })
 // mongodb+srv://admin:<password>@atlascluster.6feelsp.mongodb.net/?retryWrites=true&w=majority
-
-mongoose.connect('mongodb+srv://admin:anh03032003@atlascluster.6feelsp.mongodb.net/AppManga?retryWrites=true&w=majority', {
+// mongodb+srv://admin:123@atlascluster.6feelsp.mongodb.net/AppManga?retryWrites=true&w=majority
+mongoose.connect('mongodb+srv://admin:123@atlascluster.6feelsp.mongodb.net/AppManga?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
