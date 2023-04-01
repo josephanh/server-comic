@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const mangaController = require('../../components/manga/mangaController');
-const { authenApp } = require('../../middle/Authen');
+const { authenApp } = require('../../middleware/Authen');
 
 // http://localhost:3000/api/news/chart
 router.get('/chart', async function (req, res, next) {
