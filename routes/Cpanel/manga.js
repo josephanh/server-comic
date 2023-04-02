@@ -20,7 +20,7 @@ router.get('/data-table', [auth.authenWeb], async function (req, res, next) {
 
 
 // xử lí thêm mới
-router.post('/form-edit/new', [uploadFile.single('image')], async function (req, res, next) {
+router.post('/form-edit/new', [auth.authenWeb, uploadFile.single('image')], async function (req, res, next) {
     try {
         let { body, file } = req;
         if (file) {
