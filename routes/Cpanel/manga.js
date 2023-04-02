@@ -7,6 +7,8 @@ const middleWare = require('../../middleware/uploadFile');
 const uploadFile = require('../../middleware/uploadFile');
 const CONFIG = require('../../config/config');
 const auth = require('../../middleware/Authen');
+const {ref, getDownloadURL, uploadBytesResumable, getStorage} = require('firebase/storage')
+
 
 // http://localhost:3000/cpanel/manga/data-table
 router.get('/data-table', [auth.authenWeb], async function (req, res, next) {
@@ -18,16 +20,22 @@ router.get('/data-table', [auth.authenWeb], async function (req, res, next) {
 
 
 // xử lí thêm mới
-router.post('/form-edit/new', [auth.authenWeb, uploadFile.single('image'),], async function (req, res, next) {
+router.post('/form-edit/new', [uploadFile.single('image')], async function (req, res, next) {
     try {
         let { body, file } = req;
         if (file) {
-            // let image = `${CONFIG.CONSTANTS.config}:3000/images/${file.filename}`;
-            let image = `https://sever-app-manga.herokuapp.com/images/${file.filename}`;
-            body = { ...body, image: image }
+            const dateTime = Date.now();
+            const storage = getStorage();
+            const storageRef = ref(storage,  `${file.originalname} --- ${dateTime}` );
+            const metadata = {
+                    contentType: file.mimetype,
+            }
+            const snapshot = await uploadBytesResumable(storageRef, file.buffer, metadata);
+            const downloadUrlImage = await getDownloadURL(snapshot.ref)
+            console.log(downloadUrlImage);
+            body = { ...body, image: downloadUrlImage }
         }
         const { title, author, describe, image, category } = body;
-
         console.log(title, author, describe, image, category);
         await mangaController.addNewManga(title, author, describe, image, category);
         res.redirect('/cpanel/manga/data-table')
@@ -60,7 +68,7 @@ router.get('/:id/detailmanga/edit', [auth.authenWeb], async function (req, res, 
     const { id } = req.params;
     const manga = await mangaController.getMagaById(id);
     console.log(manga);
-    res.render('manga/detailManga', {manga});
+    res.render('manga/detailManga', { manga });
 })
 
 
