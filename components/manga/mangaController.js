@@ -37,5 +37,8 @@ const updateMangaById = async (id, title, author, image, describe, reader, liked
         console.log('Update manga error: ',error);
     }
 }
+const getMangaByQuery = async (query) => {
+
+}
 
 module.exports = { getAllManga, deleteManga, addNewManga, getMagaById, updateMangaById}

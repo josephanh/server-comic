@@ -14,7 +14,7 @@ const getAllManga = async () => {
 
 }
 
-const getMangaByQuery = async () => {
+const getMangaByQuery = async (query) => {
     try {
         
     } catch (error) {
