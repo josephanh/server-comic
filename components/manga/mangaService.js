@@ -14,7 +14,14 @@ const getAllManga = async () => {
 
 }
 
-
+const getMangaByQuery = async () => {
+    try {
+        
+    } catch (error) {
+        console.log('get Manga by query: ', error);
+        return false;
+    }
+}
 
 const addNewManga = async (title, author, describe, image, category) => {
     try {
@@ -41,7 +48,6 @@ const deteteMangabyId = async (id) => {
         console.log('detetebyId', error);
     }
 }
-
 
 const getMagaById = async (id) => {
     try {
@@ -77,7 +83,14 @@ const updateMangaById = async (id, title, author, image, describe, reader, liked
     }
 }
 
-module.exports = { getAllManga, addNewManga, deteteMangabyId, getMagaById, updateMangaById }
+module.exports = { 
+    getAllManga, 
+    getMangaByQuery,
+    addNewManga, 
+    deteteMangabyId, 
+    getMagaById, 
+    updateMangaById
+}
 
 var Data = [
     {
