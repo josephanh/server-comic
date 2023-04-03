@@ -40,7 +40,7 @@ app.use(session({
 // mongodb+srv://admin:<password>@atlascluster.6feelsp.mongodb.net/?retryWrites=true&w=majority
 // mongodb+srv://admin:123@atlascluster.6feelsp.mongodb.net/AppManga?retryWrites=true&w=majority
 // mongodb+srv://admin:123@atlascluster.6feelsp.mongodb.net/AppManga?retryWrites=true&w=majority
-mongoose.connect('mongodb://127.0.0.1:27017/AppManga', {
+mongoose.connect('mongodb+srv://admin:123@atlascluster.6feelsp.mongodb.net/AppManga?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
