@@ -1,4 +1,5 @@
 
+const mangaModel = require('./mangaModel');
 const mangaService = require('./mangaService');
 
 const getAllManga = async () => {
@@ -29,5 +30,12 @@ const getMagaById = async (id) => {
     }
 }
 
+const updateMangaById = async (id, title, author, image, describe, reader, liked, category) => {
+    try {
+        return await mangaService.updateMangaById(id, title, author, image, describe, reader, liked, category)
+    } catch (error) {
+        console.log('Update manga error: ',error);
+    }
+}
 
-module.exports = { getAllManga, deleteManga, addNewManga, getMagaById}
+module.exports = { getAllManga, deleteManga, addNewManga, getMagaById, updateMangaById}

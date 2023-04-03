@@ -361,7 +361,7 @@
                                     <td>{{this.title}}<br>
                                         <p class="small">{{this.describe}}</p>
                                     </td>
-                                    <td class="col-2"><img width="80" height="100" src="{{this.image}}" alt=""></td>
+                                    <td class="col-2 text-center"><img width="80" height="100" style="border-radius: 10px;" src="{{this.image.url}}" alt=""></td>
                                     <td class="col-2">{{this.dateCreate}}</td>
                                     <td class="col-2 position-relative">
                                         <div class="position-absolute button-custom">
@@ -371,6 +371,7 @@
                                         </div>
                                     </td>
                                 </tr>
+                            
                                 {{/each}}
 
                             </tbody>
@@ -389,8 +390,11 @@
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>
+        
 <script>
-
+    const convertDate = (unixTimes) => {
+        return new Date(unixTimes).getTime();
+    }
     const fetchAPI = async (url, option) => {
         const res = await fetch(url, option);
         return res.json();

@@ -2,7 +2,7 @@ var jwt = require('jsonwebtoken');
 console.log('Bắt dầu');
 const authenWeb = (req, res, next) => {
     const { session } = req;
-    const url = req.originalUrl.toLowerCase();
+    const url = req.originalUrl.toLowerCase(); 
     if (!session) {
         if (url.includes('login')) {
             

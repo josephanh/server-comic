@@ -6,7 +6,7 @@ const getAllManga = async () => {
         // console.log("Tới đây rồi trước khi");
         var result = await mangaModel.find();
         // console.log("Tới đây rồi ",result);  
-        return result; 
+        return result;
     } catch (error) {
         console.log('getAllNews', error);
         throw error;
@@ -30,13 +30,13 @@ const addNewManga = async (title, author, describe, image, category) => {
         }
         await mangaModel.create(manga)
     } catch (error) {
-        console.log('add-new-manga' ,error);
+        console.log('add-new-manga', error);
     }
 }
 
 const deteteMangabyId = async (id) => {
     try {
-       return await mangaModel.findByIdAndDelete(id);
+        return await mangaModel.findByIdAndDelete(id);
     } catch (error) {
         console.log('detetebyId', error);
     }
@@ -52,7 +52,32 @@ const getMagaById = async (id) => {
     }
 }
 
-module.exports = { getAllManga, addNewManga, deteteMangabyId, getMagaById }
+const updateMangaById = async (id, title, author, image, describe, reader, liked, category) => {
+    try {
+        // console.log(image);
+        let item = await mangaModel.findById(id);
+        // console.log(item.title); 
+        if (item) {
+            item.title = title ? title : item.title;
+            item.author = author ? author : item.author;
+            item.image = image ? image : item.image;
+            item.describe = describe ? describe : item.describe;
+            item.reader = Number(reader) ? Number(reader) : item.reader;
+            item.liked = Number(liked) ? Number(liked) : item.liked;
+            item.category = category ? category : item.category;
+            await item.save();
+            // console.log(true);
+            return true;
+        }
+        // console.log(false);
+        return false;
+    } catch (error) {
+        console.log(false);
+        return false;
+    }
+}
+
+module.exports = { getAllManga, addNewManga, deteteMangabyId, getMagaById, updateMangaById }
 
 var Data = [
     {

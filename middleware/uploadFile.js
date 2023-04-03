@@ -1,7 +1,6 @@
 const multer = require('multer');
 const config = require('../config/config');
 const {initializeApp} = require('firebase/app');
-const {getStorage, ref, getDownloadURL, uploadBytesResumable} = require('firebase/storage')
 
 
 initializeApp(config.firebaseConfig);

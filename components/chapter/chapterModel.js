@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 const schema = new Schema({
     // _id: { type: ObjectId }, // khóa chính
-    title: {
+    chapterOfStory: {
         type: String, // kiểu dữ liệu
         required: true, // bắt buộc phải có
         // unique: true, // không được trùng
@@ -12,15 +12,7 @@ const schema = new Schema({
         maxlength: 255, // độ dài tối đa
         default: 'No name' // giá trị mặc định
     },
-    author: {type: String},
-    image: {type: Object},
-    describe: {type: String},
-    reader: {type: Number},
-    
-    liked: {type: Number},
-    chapter: {type: ObjectId},
-    category: {type:  String},
-    dateCreate: {type: String},
+    detailChapter: {type: Array}
 });
-module.exports = mongoose.models.story || mongoose.model('story', schema);
-// story -----> stories
+module.exports = mongoose.models.chapter || mongoose.model('chapter', schema);
+// chapter -----> chapters

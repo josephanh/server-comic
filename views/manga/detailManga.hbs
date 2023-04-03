@@ -260,7 +260,7 @@
             </a>
             <ul id="tables-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="./pages/tables-general.html">      
+                    <a href="./pages/tables-general.html">
                         <i class="bi bi-circle"></i><span>User Tables</span>
                     </a>
                 </li>
@@ -325,14 +325,7 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h2>{{manga.title}}</h2>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/index.html">Home</a></li>
-                <li class="breadcrumb-item">Tables</li>
-                <li class="breadcrumb-item active">Detail</li>
-            </ol>
-        </nav>
+        <h2 class="mb-5">{{manga.title}}</h2>
     </div><!-- End Page Title -->
 
     <section class="section">
@@ -341,19 +334,20 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Danh sách truyện</h5>
+                        <h5 class="card-title">Chi tiết truyện</h5>
                         <!-- Horizontal Form -->
-                        <form method="post" action="/cpanel/manga/form-edit/new" enctype="multipart/form-data">
+                        <form method="post" action="/cpanel/manga/{{manga._id}}/detailmanga/edit"
+                            enctype="multipart/form-data">
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Tên truyện</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="title">
+                                    <input type="text" class="form-control" name="title" value="{{manga.title}}">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Tác giả</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="author">
+                                    <input type="text" class="form-control" name="author" value="{{manga.author}}">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -366,22 +360,79 @@
                             <div class="row mb-3">
                                 <label for="inputPassword3" class="col-sm-2 col-form-label">Ảnh</label>
                                 <div class="col-sm-10">
-                                    <input type="file" class="form-control" name="image">
+                                    <input type="file" class="form-control" name="image" onchange="displayImg()"
+                                        id="file">
+                                    <img id="img" src="{{manga.image.url}}" width="150"
+                                        style="margin-top: 10px; border-radius: 10px" alt="">
                                 </div>
                             </div>
                             <div class="form-group row mb-3">
                                 <label for="inputPassword3" class="col-sm-2 col-form-label">Cartegory</label>
                                 <div class="col-sm-10">
                                     <select class="form-select" name="category">
-                                        {{!-- {{#each categories}}
+                                        {{#each categories}}
+                                        {{#if this.selected}}
+                                        <option value="{{this._id}}" selected>{{this.title}}</option>
+                                        {{else}}
                                         <option value="{{this._id}}">{{this.title}}</option>
-                                        {{/each}} --}}
+                                        {{/if}}
+                                        {{/each}}
                                     </select>
                                 </div>
 
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                            </div>
+                        </form><!-- End Horizontal Form -->
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Chi tiết các chương -- Tổng số chương: </h5>
+                        <!-- Horizontal Form -->
+                        <select class="form-select form-select-md mb-3 form-control"
+                            aria-label=".form-select-lg example">
+                            <option selected>Xem chi tiết chương</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                        <form method="post" action="/cpanel/manga/{{manga._id}}/detailmanga/edit"
+                            enctype="multipart/form-data">
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Tên chương</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="title" value="{{manga.title}}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Chương số</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="author" value="{{manga.author}}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="inputPassword3" class="col-sm-2 col-form-label">Nội dung</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" rows="20"
+                                        name="describe">{{manga.describe}}</textarea>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary" id="buttonSubmit">Submit</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
                         </form><!-- End Horizontal Form -->
@@ -401,31 +452,17 @@
         class="bi bi-arrow-up-short"></i></a>
 <script>
 
-    const fetchAPI = async (url, option) => {
-        const res = await fetch(url, option);
-        return res.json();
+    const displayImg = () => {
+        var file = document.getElementById('file').files[0];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var image = document.getElementById("img");
+            image.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
     }
 
-    const deteteProduct = async (id) => {
-        const url = `/cpanel/manga/${id}/delete`;
-        const option = {
-            method: 'get',
-            headers: { 'Content-Type': 'application/json' }
-        }
-        try {
-            const resutl = await fetchAPI(url, option);
-            console.log(resutl);
-            if (resutl.status) {
-                swal("Đã xóa thành công!", {
-                    icon: "success",
-                });
-                window.location.reload();
-            }
 
-        } catch (e) {
-            console.log('Delete error ', e)
-        }
-    }
     const confirmDelete = async (id) => {
         swal({
             title: "Xác nhận",
@@ -440,4 +477,36 @@
                 }
             });
     }
+
+
+    const showLoading = function () {
+        swal({
+            title: 'Now loading',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            timer: 2000,
+            onOpen: () => {
+                swal.showLoading();
+            }
+        }).then(
+            () => { },
+            (dismiss) => {
+                if (dismiss === 'timer') {
+                    console.log('closed by timer!!!!');
+                    swal({
+                        title: 'Finished!',
+                        type: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    })
+                }
+            }
+        )
+    };
+    //showLoading();
+
+    document.getElementById("buttonSubmit")
+        .addEventListener('click', (event) => {
+            showLoading();
+        });
 </script>
