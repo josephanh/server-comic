@@ -3,7 +3,7 @@ console.log('Bắt dầu');
 const authenWeb = (req, res, next) => {
     const { session } = req;
     const token = req.cookies.access_token;
-    const url = req.originalUrl.toLowerCase(); 
+    const url = req.originalUrl.toLowerCase();
     // console.log(token);
     if (!token) {
         if (url.includes('login')) {
@@ -14,7 +14,7 @@ const authenWeb = (req, res, next) => {
     } else {
         if (!token) {
             if (url.includes('login')) {
-                
+
                 next();
             } else {
                 res.redirect('/login');
@@ -33,7 +33,13 @@ const authenWeb = (req, res, next) => {
                     if (url.includes('login')) {
                         res.redirect('/');
                     } else {
+                        const { role } = decoded;
+                        if (role < 100) {
+                            req.session.destroy();
+                            return res.redirect('/login');
+                        }
                         next();
+
                     }
                 }
             })

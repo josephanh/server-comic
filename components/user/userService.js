@@ -20,7 +20,7 @@ const register = async (email, password, name) => {
         if (!user) {
             var salt = bcryptjs.genSaltSync(10);
             var hash = bcryptjs.hashSync(password, salt);
-            const newUser = { email, password: hash, name };
+            const newUser = { email, password: hash, name, role: 1 };
             console.log(newUser);
             await userModel.create(newUser);
             return true;

@@ -20,7 +20,7 @@ router.post('/login', async function (req, res, next) {
   const result = await userController.login(email, password);
   // console.log(result);
   if (result != null) {
-    const token = jwt.sign({ _id: result._id }, 'secret');
+    const token = jwt.sign({ _id: result._id, role: result.role }, 'secret');
     res.cookie("access_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
