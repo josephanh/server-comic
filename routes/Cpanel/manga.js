@@ -155,9 +155,9 @@ router.post('/update/chapter/:idstory/:idchapter', async (req, res, next) => {
         const {idstory, idchapter} = req.params;
         const {title, chapter_index, content} = req.body;
         // console.log(idchapter, title, chapter_index, content, idstory);
-        const result = await chapterController.updateChapter(idchapter, title, chapter_index, content, idstory);
+        const result = await chapterController.updateChapter(idchapter, title, chapter_index, content);
         console.log(result);
-        return res.status(200).json(result);
+        return res.redirect(`/cpanel/manga/${idstory}/detailmanga/edit`);
     } catch (error) {
         console.log(error);
         return res.status(400).json({})

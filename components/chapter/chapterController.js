@@ -18,10 +18,10 @@ const addNewChapter = async (id, title, content, chapter_index) => {
         // const check
         const chapterNew = await chapterService.addNewChapter(title, content, chapter_index);
         var result = false;
-        if(chapterNew) {
+        if (chapterNew) {
             result = mangaModel.updateOne(
                 { _id: id },
-                { $push: {chapters: {index: chapterNew.chapter_index, title: chapterNew.title, id_chapter: chapterNew._id }} }
+                { $push: { chapters: { _id: chapterNew._id } } }
             )
         }
         // console.log("ketqua: ",result);
@@ -38,24 +38,11 @@ const deleteChapter = async (id) => {
         throw error;
     }
 }
-const updateChapter = async (id, title, chapter_index, content, id_story) => {
+const updateChapter = async (id, title, chapter_index, content) => {
     try {
         const updateChapter = await chapterService.updateChapter(id, title, chapter_index, content);
-        if(updateChapter != null) {
-            console.log(id," id " ,id_story);
-            const result = await mangaModel.updateOne(
-                { _id: id_story, "chapters.id_chapter": {$eq: id} },
-                { $set: {"chapters.$.title": title}}
-            )
-            console.log(result);
-            // if(result) {
-            //     result.index = updateChapter.chapter_index;
-            //     result.title = updateChapter.title;
-            //     result.id_chapter = updateChapter._id;
-            //     result.save();
-            //     return true;
-            // }
-            return true;
+        if (updateChapter != null) {
+            return updateChapter;
         }
         return false;
     } catch (error) {

@@ -18,7 +18,7 @@ const schema = new Schema({
     reader: {type: Number},
     
     liked: {type: Number},
-    chapters: {type: Array, ref: 'chapter'},
+    chapters: [{type: ObjectId, ref: 'chapter'}],
     category: {type:  String, ref: 'category'},
     dateCreated: {type: String},
 });

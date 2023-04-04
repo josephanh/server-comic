@@ -407,12 +407,12 @@
                             aria-label=".form-select-lg example" id="chapterId" onchange="getValueChapter()">
                             <option selected value="0">Chọn để xem chương</option>
                             {{#each chapters}}
-                            <option value="{{this.id_chapter}}">{{this.index}}&nbsp; &ensp; &ensp; &ensp; {{this.title}}
+                            <option value="{{this._id}}">{{this.chapter_index}}&nbsp; &ensp; &ensp; &ensp;
+                                {{this.title}}
                             </option>
                             {{/each}}
                         </select>
-                        <form method="post" action="" id="form-chapter"
-                            enctype=" multipart/form-data">
+                        <form method="post" action="" id="form-chapter" enctype=" multipart/form-data">
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Tên chương</label>
                                 <div class="col-sm-10">
@@ -481,10 +481,8 @@
                 // parse response data
                 response.json().then(data => {
                     listChapters = data.chapters;
-                    listChapterIndex = listChapters.map(item => {
-                        return item.index;
-                    })
-
+                    //console.log(listChapters)
+                    listChapterIndex = listChapters.map(item => { return item.chapter_index });
                     //console.log(listChapterIndex);
                     if (listChapters.length > 0) {
                         dropdownSelect.removeAttribute('disabled');
@@ -524,26 +522,10 @@
         // gọi api chi tiết các chapter;
         if (i != 0) {
             //let index = responseName.indexOf(i);
-            fetch(`/api/manga/getchapter/${i}`)
-                .then(
-                    function (response) {
-                        if (response.status !== 200) {
-                            console.log('Lỗi, mã lỗi ' + response.status);
-                            return;
-                        }
-                        // parse response data
-                        response.json().then(data => {
-                            let chapter = data;
-                            //console.log(chapter);
-                            titleChapter.value = chapter.title
-                            chapter_index.value = chapter.chapter_index;
-                            content.value = chapter.content;
-                        })
-                    }
-                )
-                .catch(err => {
-                    console.log('Error :-S', err)
-                });
+            let chapter = listChapters.find(item => item._id == i);
+            titleChapter.value = chapter.title
+            chapter_index.value = chapter.chapter_index;
+            content.value = chapter.content;
         } else {
             titleChapter.value = ""
             chapter_index.value = "";
@@ -555,15 +537,17 @@
         var chapter_index = document.getElementById('numberChapter').value;
         var isCreate = listChapterIndex.includes(Number(chapter_index));
 
-        console.log(isCreate);
-        if (isCreate && !titleChapter.value == "" && !content.value == "" && !titleChapter.value == "") {
-            console.log(isCreate && !titleChapter.value == "" && !content.value == "")
+        //console.log(isCreate);
+        if (isCreate && titleChapter.value != "" && content.value != "" && titleChapter.value != "") {
+            //console.log(isCreate && !titleChapter.value == "" && !content.value == "")
             buttonCreate.classList.add('disabled');
             buttonCreate.classList.replace('btn-primary', 'btn-outline-primary');
             buttonUpdate.classList.remove('disabled');
             buttonUpdate.classList.replace('btn-outline-primary', 'btn-primary');
-            formChapter.setAttribute('action', `/cpanel/manga/update/chapter/{{manga._id}}/${dropdownSelect.value}`);
-        } else if (!titleChapter.value == "" && !content.value == "" && !chapter_index == "") {
+            var changeChapter = listChapters.find(item => item.chapter_index == chapter_index);
+            //console.log(changeChapter);
+            formChapter.setAttribute('action', `/cpanel/manga/update/chapter/{{manga._id}}/${changeChapter._id}`);
+        } else if (!isCreate && !titleChapter.value == "" && !content.value == "" && !chapter_index == "") {
             buttonCreate.classList.remove('disabled');
             buttonCreate.classList.replace('btn-outline-primary', 'btn-primary');
             buttonUpdate.classList.replace('btn-primary', 'btn-outline-primary');

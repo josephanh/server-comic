@@ -6,6 +6,7 @@ const getAllManga = async () => {
         // console.log("Tới đây rồi trước khi");
         var result = await mangaModel
             .find()
+            .populate('chapters')
             .populate('category');
         // console.log("Tới đây rồi ",result);  
         return result;
@@ -54,7 +55,9 @@ const deteteMangabyId = async (id) => {
 
 const getMagaById = async (id) => {
     try {
-        let manga = await mangaModel.findById(id);
+        let manga = await mangaModel.findById(id)
+            .populate('chapters')
+            .populate('category');
         return manga;
     } catch (e) {
         console.log('getMangaById', e);
@@ -64,9 +67,9 @@ const getMagaById = async (id) => {
 const getMagaByIdWeb = async (id) => {
     try {
         let manga = await mangaModel
-        .findOne({_id: id})
-        .populate('category')
-        // .populate('chapters');
+            .findOne({ _id: id })
+            .populate('category')
+            .populate('chapters');
         // manga.chapter.totalChapter = manga.chapter.detailChapter.length;
         return manga;
     } catch (e) {

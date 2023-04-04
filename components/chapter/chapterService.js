@@ -3,7 +3,9 @@ const chapterModel = require("./chapterModel")
 
 const getChapterOfStory = async (id) => {
     try {
-        let chapters = await chapterModel.findById(id);
+        let chapters = await chapterModel.findById(id)
+            .populate('chapters')
+            .populate('category');;
         return chapters;
     } catch (error) {
         throw error;
@@ -38,11 +40,12 @@ const deleteChapter = async (id) => {
 }
 const updateChapter = async (id, title, chapter_index, content) => {
     try {
-        const chapter = await chapterModel.findById(id);
-        if(chapter) {
+        const chapter = await chapterModel.findOne({_id: id, chapter_index: chapter_index});
+        if (chapter) {
             chapter.title = title ? title : chapter.title;
             chapter.chapter_index = chapter_index ? chapter_index : chapter.chapter_index;
             chapter.content = content ? content : chapter.content;
+            chapter.date_update = Date.now();
             chapter.save();
             return chapter;
         }
