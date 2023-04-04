@@ -13,7 +13,7 @@ router.get('/chart', async function (req, res, next) {
 // api lay tat cac cac truyen - phai co token
 router.get('/', [authenApp], async (req, res, next) => {
     try {
-        const mangas = await mangaController.getAllNews();
+        const mangas = await mangaController.getAllManga();
         res.status(200).json({ mangas });
     } catch (error) {
         res.status(400).json({});
