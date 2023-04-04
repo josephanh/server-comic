@@ -1,6 +1,7 @@
 
 const mangaModel = require('./mangaModel');
 const mangaService = require('./mangaService');
+const chapterService = require('../chapter/chapterService');
 
 const getAllManga = async () => {
     return await mangaService.getAllManga();
@@ -29,7 +30,13 @@ const getMagaById = async (id) => {
         throw error;
     }
 }
-
+const getMagaByIdWeb = async (id) => {
+    try {
+        return await mangaService.getMagaByIdWeb(id);
+    } catch (error) {
+        throw error;
+    }
+}
 const updateMangaById = async (id, title, author, image, describe, reader, liked, category) => {
     try {
         return await mangaService.updateMangaById(id, title, author, image, describe, reader, liked, category)
@@ -41,4 +48,11 @@ const getMangaByQuery = async (query) => {
 
 }
 
-module.exports = { getAllManga, deleteManga, addNewManga, getMagaById, updateMangaById}
+module.exports = { 
+    getAllManga, 
+    deleteManga, 
+    addNewManga, 
+    getMagaById, 
+    getMagaByIdWeb,
+    updateMangaById
+}

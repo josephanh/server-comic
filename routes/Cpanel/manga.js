@@ -13,12 +13,46 @@ const { ref, getDownloadURL, uploadBytesResumable, getStorage, deleteObject } = 
 // hiện thị bảng sản phẩm
 // http://localhost:3000/cpanel/manga/data-table
 router.get('/data-table', [auth.authenWeb], async function (req, res, next) {
-    const resuflt = await mangaController.getAllManga();
+    const result = await mangaController.getAllManga();
     // console.log(resuflt);
     // hiển thị trang bảng dữ liệu
-    res.render('manga/data-table', { data: resuflt })
+    res.render('manga/data-table', { data: result })
 })
 
+// xử lí xóa manga
+// http://localhost:3000/cpanel/manga/:id/delete
+router.get('/:id/delete/:idchapter/:nameImage', [auth.authenWeb], async function (req, res, next) {
+    try {
+        const { id, idchapter, nameImage } = req.params;
+        // console.log(id, idchapter, nameImage);
+        const storage = getStorage();
+        const desertRef = ref(storage, `${nameImage}`);
+        // console.log(desertRef);
+        deleteObject(desertRef).then(() => {
+            // File deleted successfully
+            console.log('File deleted successfully');
+        }).catch((error) => {
+            // Uh-oh, an error occurred!
+            console.log('Uh-oh, an error occurred!', error);
+        });
+        await chapterController.deleteChapter(idchapter);
+
+        await mangaController.deleteManga(id);
+
+        res.json({ status: true })
+    } catch (error) {
+        console.log(error);
+        res.json({ status: false })
+    }
+})
+// hiện thị trang thêm mới manga
+// http://localhost:3000/cpanel/manga/form/form-editer
+router.get('/form/form-editer', [auth.authenWeb], async function (req, res, next) {
+    const categories = await categoryController.getAllCategory();
+    // console.log(categories);
+    // hiển thị trang bảng thêm dữ liệu dữ liệu
+    res.render('manga/form-editer', { categories })
+})
 
 // xử lí thêm mới
 router.post('/form-edit/new', [auth.authenWeb, uploadFile.single('image')], async function (req, res, next) {
@@ -45,42 +79,26 @@ router.post('/form-edit/new', [auth.authenWeb, uploadFile.single('image')], asyn
         console.log('addnew ', error);
     }
 })
-// xử lí xóa
-// http://localhost:3000/cpanel/manga/:id/delete
-router.get('/:id/delete', [auth.authenWeb], async function (req, res, next) {
-    try {
-        const { id } = req.params;
-        console.log(id);
-        await mangaController.deleteManga(id);
-        res.json({ status: true })
-    } catch (error) {
-        res.json({ status: false })
-    }
-})
-// hiện thị trang thêm mới
-// http://localhost:3000/cpanel/manga/form/form-editer
-router.get('/form/form-editer', [auth.authenWeb], async function (req, res, next) {
-    const categories = await categoryController.getAllCategory();
-    // console.log(categories);
-    // hiển thị trang bảng thêm dữ liệu dữ liệu
-    res.render('manga/form-editer', { categories })
-})
-// hiện thị trang update manga -> 
+
+// hiện thị trang update manga 
 router.get('/:id/detailmanga/edit', [auth.authenWeb], async function (req, res, next) {
     const { id } = req.params;
     const categories = await categoryController.getAllCategory();
-    const manga = await mangaController.getMagaById(id);
-    // console.log(manga);
+    const manga = await mangaController.getMagaByIdWeb(id);
+    
+    const chapters = manga.chapters;
+
+    console.log(chapters);
     for (let i = 0; i < categories.length; i++) {
         categories[i].selected = false;
-        if (categories[i]._id.toString() == manga.category.toString()) {
+        if (categories[i]._id.toString() == manga.category._id.toString()) {
             categories[i].selected = true;
             // console.log("catergory: ",categories[i]);
         }
     }
-    res.render('manga/detailManga', { manga, categories });
+    res.render('manga/detailManga', { manga, categories, chapters });
 })
-// xu li cap nhat
+// xu li cap nhat manga
 router.post('/:id/detailmanga/edit', [auth.authenWeb, uploadFile.single('image')], async function (req, res, next) {
     try {
         let { id } = req.params;
@@ -117,7 +135,44 @@ router.post('/:id/detailmanga/edit', [auth.authenWeb, uploadFile.single('image')
     }
 })
 
-router.get('/add/story/chapter', async (req, res, next) => {
+// thêm một chapter mới trong chapters
+router.post('/add/chapter/:id', async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const url = req.originalUrl.toLowerCase();
+        const {title, chapter_index, content} = req.body;
+        console.log(id, title, chapter_index, content);
+        const chapter =  await chapterController.addNewChapter(id, title, content, chapter_index);
+        return res.redirect(`/cpanel/manga/${id}/detailmanga/edit`);
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+// update một chapter 
+router.post('/update/chapter/:idstory/:idchapter', async (req, res, next) => {
+    try {
+        const {idstory, idchapter} = req.params;
+        const {title, chapter_index, content} = req.body;
+        // console.log(idchapter, title, chapter_index, content, idstory);
+        const result = await chapterController.updateChapter(idchapter, title, chapter_index, content, idstory);
+        console.log(result);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({})
+    }
+})
+
+
+
+
+
+
+
+
+// service demo chapter
+router.get('/add/chapter', async (req, res, next) => {
     try {
         const result = await chapterController.addNewChapter();
         return res.status(200).json({ result: result });
@@ -126,18 +181,9 @@ router.get('/add/story/chapter', async (req, res, next) => {
         return res.status(400).json({ result: false });
     }
 })
-router.post('/add/story/chapter/edit/:id', async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const { title, numberChapter, content } = req.body;
-        console.log(id, title, numberChapter, content);
-        const result = await chapterController.addNewChapterOfStory(id, title, numberChapter, content);
-        return res.status(200).json({ status: result });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({ result: false });
-    }
-})
+
+// test
+
 
 
 module.exports = router;

@@ -367,7 +367,7 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-3">
-                                <label for="inputPassword3" class="col-sm-2 col-form-label">Cartegory</label>
+                                <label for="inputPassword3" class="col-sm-2 col-form-label">Thể loại</label>
                                 <div class="col-sm-10">
                                     <select class="form-select" name="category">
                                         {{#each categories}}
@@ -401,38 +401,44 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Chi tiết các chương -- Tổng số chương: </h5>
+                        <h5 class="card-title">Chi tiết các chương -- Tổng số chương: {{manga.chapters.length}}</h5>
                         <!-- Horizontal Form -->
                         <select class="form-select form-select-md mb-3 form-control"
-                            aria-label=".form-select-lg example">
-                            <option selected>Xem chi tiết chương</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            aria-label=".form-select-lg example" id="chapterId" onchange="getValueChapter()">
+                            <option selected value="0">Chọn để xem chương</option>
+                            {{#each chapters}}
+                            <option value="{{this.id_chapter}}">{{this.index}}&nbsp; &ensp; &ensp; &ensp; {{this.title}}
+                            </option>
+                            {{/each}}
                         </select>
-                        <form method="post" action="/cpanel/manga/{{manga._id}}/detailmanga/edit"
-                            enctype="multipart/form-data">
+                        <form method="post" action="" id="form-chapter"
+                            enctype=" multipart/form-data">
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Tên chương</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="title" value="{{manga.title}}">
+                                    <input type="text" class="form-control" name="title" id="titleChapter" value=""
+                                        onkeyup="checkChapterIndex()">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Chương số</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="author" value="{{manga.author}}">
+                                    <input type="number" class="form-control" name="chapter_index" id="numberChapter"
+                                        value="" onkeyup="checkChapterIndex()">
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="inputPassword3" class="col-sm-2 col-form-label">Nội dung</label>
                                 <div class="col-sm-10">
-                                    <textarea class="form-control" rows="20"
-                                        name="describe">{{manga.describe}}</textarea>
+                                    <textarea class="form-control" rows="20" name="content" id="content"
+                                        onkeyup="checkChapterIndex()"></textarea>
                                 </div>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary" id="buttonSubmit">Submit</button>
+                                <button type="submit" class="btn btn-primary disabled" id="buttonCreate"
+                                    onclick="onClickSubmit()">Create</button>
+                                <button type="submit" class="btn btn-primary disabled" id="buttonUpdate"
+                                    onclick="onClickSubmit()">Update</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
                         </form><!-- End Horizontal Form -->
@@ -451,7 +457,6 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>
 <script>
-
     const displayImg = () => {
         var file = document.getElementById('file').files[0];
         var reader = new FileReader();
@@ -462,6 +467,34 @@
         reader.readAsDataURL(file);
     }
 
+    var listChapters = [], listChapterIndex = [];
+    var dropdownSelect = document.getElementById('chapterId');
+    dropdownSelect.setAttribute('disabled', true);
+    // gọi api để lấy các chapter
+    fetch(`/api/manga/web-sever-no-token/detail/{{manga._id}}`)
+        .then(
+            function (response) {
+                if (response.status !== 200) {
+                    console.log('Lỗi, mã lỗi ' + response.status);
+                    return;
+                }
+                // parse response data
+                response.json().then(data => {
+                    listChapters = data.chapters;
+                    listChapterIndex = listChapters.map(item => {
+                        return item.index;
+                    })
+
+                    //console.log(listChapterIndex);
+                    if (listChapters.length > 0) {
+                        dropdownSelect.removeAttribute('disabled');
+                    }
+                })
+            }
+        )
+        .catch(err => {
+            console.log('Error :-S', err)
+        });
 
     const confirmDelete = async (id) => {
         swal({
@@ -479,34 +512,90 @@
     }
 
 
-    const showLoading = function () {
-        swal({
-            title: 'Now loading',
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            timer: 2000,
-            onOpen: () => {
-                swal.showLoading();
-            }
-        }).then(
-            () => { },
-            (dismiss) => {
-                if (dismiss === 'timer') {
-                    console.log('closed by timer!!!!');
-                    swal({
-                        title: 'Finished!',
-                        type: 'success',
-                        timer: 2000,
-                        showConfirmButton: false
-                    })
-                }
-            }
-        )
-    };
-    //showLoading();
+    var titleChapter = document.getElementById('titleChapter');
+    var chapter_index = document.getElementById('numberChapter');
+    var content = document.getElementById('content');
+    var buttonCreate = document.getElementById('buttonCreate');
+    var buttonUpdate = document.getElementById('buttonUpdate');
+    var formChapter = document.getElementById('form-chapter');
 
-    document.getElementById("buttonSubmit")
-        .addEventListener('click', (event) => {
-            showLoading();
-        });
+    const getValueChapter = () => {
+        var i = dropdownSelect.value;
+        // gọi api chi tiết các chapter;
+        if (i != 0) {
+            //let index = responseName.indexOf(i);
+            fetch(`/api/manga/getchapter/${i}`)
+                .then(
+                    function (response) {
+                        if (response.status !== 200) {
+                            console.log('Lỗi, mã lỗi ' + response.status);
+                            return;
+                        }
+                        // parse response data
+                        response.json().then(data => {
+                            let chapter = data;
+                            //console.log(chapter);
+                            titleChapter.value = chapter.title
+                            chapter_index.value = chapter.chapter_index;
+                            content.value = chapter.content;
+                        })
+                    }
+                )
+                .catch(err => {
+                    console.log('Error :-S', err)
+                });
+        } else {
+            titleChapter.value = ""
+            chapter_index.value = "";
+            content.value = "";
+        }
+
+    }
+    const checkChapterIndex = () => {
+        var chapter_index = document.getElementById('numberChapter').value;
+        var isCreate = listChapterIndex.includes(Number(chapter_index));
+
+        console.log(isCreate);
+        if (isCreate && !titleChapter.value == "" && !content.value == "" && !titleChapter.value == "") {
+            console.log(isCreate && !titleChapter.value == "" && !content.value == "")
+            buttonCreate.classList.add('disabled');
+            buttonCreate.classList.replace('btn-primary', 'btn-outline-primary');
+            buttonUpdate.classList.remove('disabled');
+            buttonUpdate.classList.replace('btn-outline-primary', 'btn-primary');
+            formChapter.setAttribute('action', `/cpanel/manga/update/chapter/{{manga._id}}/${dropdownSelect.value}`);
+        } else if (!titleChapter.value == "" && !content.value == "" && !chapter_index == "") {
+            buttonCreate.classList.remove('disabled');
+            buttonCreate.classList.replace('btn-outline-primary', 'btn-primary');
+            buttonUpdate.classList.replace('btn-primary', 'btn-outline-primary');
+            buttonUpdate.classList.add('disabled');
+            formChapter.setAttribute('action', `/cpanel/manga/add/chapter/{{manga._id}}`)
+        } else {
+            if (titleChapter.value == "" || content.value == "" || chapter_index == "") {
+                buttonUpdate.classList.add('disabled');
+                buttonCreate.classList.add('disabled');
+            }
+
+        }
+    }
+    const onClickSubmit = () => {
+        var chapter_index = document.getElementById('numberChapter').value;
+        var isCreate = listChapterIndex.includes(Number(chapter_index));
+        if (isCreate) {
+            swal({
+                title: "Xác nhận",
+                text: "Đã có chương ",
+                icon: "warning",
+                //buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+
+                    }
+                });
+        }
+    }
+
+
+
 </script>

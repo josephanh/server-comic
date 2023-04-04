@@ -18,9 +18,9 @@ const schema = new Schema({
     reader: {type: Number},
     
     liked: {type: Number},
-    chapter: {type: ObjectId},
-    category: {type:  String},
-    dateCreate: {type: String},
+    chapters: {type: Array, ref: 'chapter'},
+    category: {type:  String, ref: 'category'},
+    dateCreated: {type: String},
 });
 module.exports = mongoose.models.story || mongoose.model('story', schema);
 // story -----> stories

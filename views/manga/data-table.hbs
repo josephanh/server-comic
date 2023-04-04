@@ -350,7 +350,7 @@
                                     {{!-- <th scope="col" class="col-1">id</th> --}}
                                     <th scope="col">Tên truyện và mô tả</th>
                                     <th scope="col">Poster</th>
-                                    <th scope="col">Ngày tạo</th>
+                                    <th scope="col">Thể loại</th>
                                     <th scope="col" class="text-center">Chi tiết</th>
                                 </tr>
                             </thead>
@@ -359,14 +359,14 @@
                                 <tr>
                                     {{!-- <th scope="row">{{this._id}}</th> --}}
                                     <td>{{this.title}}<br>
-                                        <p class="small">{{this.describe}}</p>
+                                        <p class="small">Tác giả: {{this.author}}</p>
                                     </td>
                                     <td class="col-2 text-center"><img width="80" height="100" style="border-radius: 10px;" src="{{this.image.url}}" alt=""></td>
-                                    <td class="col-2">{{this.dateCreate}}</td>
+                                    <td class="col-2">{{this.category.title}}</td>
                                     <td class="col-2 position-relative">
                                         <div class="position-absolute button-custom">
                                             <button type="button" class="btn btn-outline-danger mx-auto"
-                                                onclick="confirmDelete(`{{this._id}}`)">Xóa</button>
+                                                onclick="confirmDelete(`{{this._id}}`, `{{this.chapter}}`, `{{this.image.name}}`)">Xóa</button>
                                             <a href="/cpanel/manga/{{this._id}}/detailmanga/edit" class="btn btn-outline-primary mx-auto" tabindex="-1" role="button" aria-disabled="true">Chi tiết</a>
                                         </div>
                                     </td>
@@ -400,8 +400,8 @@
         return res.json();
     }
 
-    const deteteProduct = async (id) => {
-        const url = `/cpanel/manga/${id}/delete`;
+    const deteteProduct = async (id, idchapter, nameImage) => {
+        const url = `/cpanel/manga/${id}/delete/${idchapter}/${nameImage}`;
         const option = {
             method: 'get',
             headers: { 'Content-Type': 'application/json' }
@@ -420,7 +420,7 @@
             console.log('Delete error ', e)
         }
     }
-    const confirmDelete = async (id) => {
+    const confirmDelete = async (id, idchapter, nameImage) => {
         swal({
             title: "Xác nhận",
             text: "Bạn có muốn xóa không?",
@@ -430,7 +430,7 @@
         })
             .then((willDelete) => {
                 if (willDelete) {
-                    deteteProduct(id);
+                    deteteProduct(id, idchapter, nameImage);
                 }
             });
     }

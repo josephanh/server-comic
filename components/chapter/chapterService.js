@@ -1,3 +1,4 @@
+const mangaModel = require("../manga/mangaModel");
 const chapterModel = require("./chapterModel")
 
 const getChapterOfStory = async (id) => {
@@ -9,59 +10,110 @@ const getChapterOfStory = async (id) => {
     }
 }
 // them mot document chapter de them vao story
-const addNewChapter = async () => {
+const addNewChapter = async (title, content, chapter_index) => {
     try {
-        const chapters = {
-            chapterOfStory: "new chapter of name null",
-            detailChapter: []
+        const chapter = {
+            title,
+            content,
+            chapter_index,
+            date_created: Date.now(),
+            date_update: Date.now()
         }
-        const newChapters = await chapterModel.create(chapters);
+        const newChapters = await chapterModel.create(chapter);
         return newChapters;
     } catch (error) {
         console.log(error);
         return false;
     }
 }
+const deleteChapter = async (id) => {
+    try {
+        console.log(id);
+        const result = await chapterModel.findByIdAndDelete(id);
+        console.log(result);
+        return result;
+    } catch (error) {
+        console.log("delete chapter service", error);
+    }
+}
+const updateChapter = async (id, title, chapter_index, content) => {
+    try {
+        const chapter = await chapterModel.findById(id);
+        if(chapter) {
+            chapter.title = title ? title : chapter.title;
+            chapter.chapter_index = chapter_index ? chapter_index : chapter.chapter_index;
+            chapter.content = content ? content : chapter.content;
+            chapter.save();
+            return chapter;
+        }
+        return null;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}
+
+const checkChapterExist = async (id, index) => {
+    try {
+        var chapters = await chapterModel.findById(id);
+        var detailChapter = chapters.detailChapter;
+        var result = detailChapter.find(item => {
+            return item.numberChapter == index;
+        })
+        return result;
+    } catch (error) {
+        console.log(error);
+        return true;
+    }
+}
+
 // cap nhat detailChapter trong chapters
+// const addNewChapterOfStory = async (id, title, numberChapter, content) => {
+//     // console.log(id, title, numberChapter, content);
+//     try {
+//         let chapter = await chapterModel.findById(id);
+
+//         if (chapter) {
+//             let detailChapter = chapter.detailChapter;
+//             const newChapterOfDetail = {
+//                 title: title ? title : "No title",
+//                 numberChapter: numberChapter ? numberChapter : detailChapter.length + 1,
+//                 content: content ? content : "No content",
+//             }
+//             detailChapter.push(newChapterOfDetail);
+//             chapter.detailChapter = detailChapter;
+//             await chapter.save();
+//             return true;
+//         }
+//         return false;
+//     } catch (error) {
+//         console.log(error);
+//         return false;
+//     }
+// }
+
+// thêm một chapter vào detailChapter
 const addNewChapterOfStory = async (id, title, numberChapter, content) => {
     // console.log(id, title, numberChapter, content);
     try {
-        let chapter = await chapterModel.findById(id);
-        
-        if (chapter) {
-            let detailChapter = chapter.detailChapter;
-            const newChapterOfDetail = {
-                title: title ? title : "No title",
-                numberChapter: numberChapter ? numberChapter : detailChapter.length + 1,
-                content: content ? content : "No content",
-            }
-            detailChapter.push(newChapterOfDetail);
-            chapter.detailChapter = detailChapter;
-            await chapter.save();
-            return true;
-        }
-        return false;
+        const result = chapterModel.updateOne(
+            { _id: id, 'detailChapter.numberChapter': { $ne: numberChapter } },
+            { $push: { detailChapter: { title, numberChapter, content } } }
+        )
+        console.log(result);
+        return result;
     } catch (error) {
-        console.log(error);
-        return false;
-    }
-}
 
-const updateContentChapter = async (id, numberChapter, title, content) => {
-    try {
-        let contentChapter = await chapterModel.findById(id)[numberChapter];
-        if (contentChapter) {
-            contentChapter.title = title ? title : contentChapter.title;
-            contentChapter.content = content ? content : contentChapter.content;
-            await contentChapter.save();
-            return true;
-        }
-    } catch (error) {
-        console.log(error);
-        throw error;
     }
 }
 
 
+module.exports = {
+    getChapterOfStory,
+    addNewChapter,
+    deleteChapter,
+    updateChapter,
 
-module.exports = { getChapterOfStory, addNewChapter, updateContentChapter, addNewChapterOfStory }
+    addNewChapterOfStory,
+    checkChapterExist,
+}

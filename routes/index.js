@@ -18,7 +18,7 @@ router.get('/login', [auth.authenWeb], function (req, res, next) {
 router.post('/login', async function (req, res, next) {
   const { email, password } = req.body;
   const result = await userController.login(email, password);
-  console.log(result);
+  // console.log(result);
   if (result != null) {
     const token = jwt.sign({ _id: result._id }, 'secret');
     res.cookie("access_token", token, {

@@ -4,7 +4,9 @@ const mangaModel = require("./mangaModel");
 const getAllManga = async () => {
     try {
         // console.log("Tới đây rồi trước khi");
-        var result = await mangaModel.find();
+        var result = await mangaModel
+            .find()
+            .populate('category');
         // console.log("Tới đây rồi ",result);  
         return result;
     } catch (error) {
@@ -16,7 +18,7 @@ const getAllManga = async () => {
 
 const getMangaByQuery = async (query) => {
     try {
-        
+
     } catch (error) {
         console.log('get Manga by query: ', error);
         return false;
@@ -33,7 +35,8 @@ const addNewManga = async (title, author, describe, image, category) => {
             liked: 0,
             reader: 0,
             category,
-            dateCreate: Date.parse(new Date())
+            chapter: [],
+            dateCreated: Date.parse(new Date()),
         }
         await mangaModel.create(manga)
     } catch (error) {
@@ -55,6 +58,20 @@ const getMagaById = async (id) => {
         return manga;
     } catch (e) {
         console.log('getMangaById', e);
+    }
+}
+
+const getMagaByIdWeb = async (id) => {
+    try {
+        let manga = await mangaModel
+        .findOne({_id: id})
+        .populate('category')
+        // .populate('chapters');
+        // manga.chapter.totalChapter = manga.chapter.detailChapter.length;
+        return manga;
+    } catch (e) {
+        console.log('getMangaById', e);
+        return null;
     }
 }
 
@@ -83,12 +100,13 @@ const updateMangaById = async (id, title, author, image, describe, reader, liked
     }
 }
 
-module.exports = { 
-    getAllManga, 
+module.exports = {
+    getAllManga,
     getMangaByQuery,
-    addNewManga, 
-    deteteMangabyId, 
-    getMagaById, 
+    addNewManga,
+    deteteMangabyId,
+    getMagaById,
+    getMagaByIdWeb,
     updateMangaById
 }
 

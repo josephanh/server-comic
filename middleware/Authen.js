@@ -4,7 +4,7 @@ const authenWeb = (req, res, next) => {
     const { session } = req;
     const token = req.cookies.access_token;
     const url = req.originalUrl.toLowerCase(); 
-    console.log(token);
+    // console.log(token);
     if (!token) {
         if (url.includes('login')) {
             next();
@@ -20,7 +20,7 @@ const authenWeb = (req, res, next) => {
                 res.redirect('/login');
             }
         } else {
-            console.log(token);
+            // console.log(token);
             // const data = jwt.verify(token, "secret");
             jwt.verify(token, 'secret', function (error, decoded) {
                 if (error) {

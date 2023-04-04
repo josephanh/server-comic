@@ -1,7 +1,9 @@
 const { model } = require('mongoose');
 const chapterService = require('./chapterService')
+const mangaService = require('../manga/mangaService');
+const mangaModel = require('../manga/mangaModel');
 
-const getChapterOfStory = async () => {
+const getChapterOfStory = async (id) => {
     try {
         return await chapterService.getChapterOfStory(id);
     } catch (error) {
@@ -9,33 +11,103 @@ const getChapterOfStory = async () => {
     }
 }
 
-const updateContentChapter = async (id, numberChapter, title, content) => {
+// phần này là của manga -- tao moi mot chapter
+// chapter nay de them vo phan chapter trong story
+const addNewChapter = async (id, title, content, chapter_index) => {
     try {
-        return await chapterService.updateContentChapter(id, numberChapter, title, content);
+        // const check
+        const chapterNew = await chapterService.addNewChapter(title, content, chapter_index);
+        var result = false;
+        if(chapterNew) {
+            result = mangaModel.updateOne(
+                { _id: id },
+                { $push: {chapters: {index: chapterNew.chapter_index, title: chapterNew.title, id_chapter: chapterNew._id }} }
+            )
+        }
+        // console.log("ketqua: ",result);
+        return result;
     } catch (error) {
-        console.log('Update chapter error: ',error);
+        return false;
+        throw error;
+    }
+}
+const deleteChapter = async (id) => {
+    try {
+        return chapterService.deleteChapter(id);
+    } catch (error) {
+        throw error;
+    }
+}
+const updateChapter = async (id, title, chapter_index, content, id_story) => {
+    try {
+        const updateChapter = await chapterService.updateChapter(id, title, chapter_index, content);
+        if(updateChapter != null) {
+            console.log(id," id " ,id_story);
+            const result = await mangaModel.updateOne(
+                { _id: id_story, "chapters.id_chapter": {$eq: id} },
+                { $set: {"chapters.$.title": title}}
+            )
+            console.log(result);
+            // if(result) {
+            //     result.index = updateChapter.chapter_index;
+            //     result.title = updateChapter.title;
+            //     result.id_chapter = updateChapter._id;
+            //     result.save();
+            //     return true;
+            // }
+            return true;
+        }
+        return false;
+    } catch (error) {
         throw error;
     }
 }
 
-const addNewChapter = async () => {
+// thêm một chapter vào story
+// them mot chapter vao phan chapter trong story
+// dung push();
+// const addNewChapterOfStory = async (id, title, numberChapter, content) => {
+//     try {
+//         const indexChapter = await chapterService.checkChapterExist(id, numberChapter);
+//         if (!indexChapter) {
+//             console.log(indexChapter);
+//             const chapter = await chapterService.addNewChapterOfStory(id, title, numberChapter, content);
+//             console.log(chapter);
+//             return chapter;
+//         }
+//         return false;
+//     } catch (error) {
+//         return false;
+//         throw error;
+//     }
+// }
+
+const checkChapterExist = async (id, index) => {
     try {
-        return await chapterService.addNewChapter();
+        return await chapterService.checkChapterExist(id, index);
     } catch (error) {
-        return false;
+        console.log(error);
         throw error;
     }
 }
 
 const addNewChapterOfStory = async (id, title, numberChapter, content) => {
     try {
-        const chapter = await chapterService.addNewChapterOfStory(id, title, numberChapter, content);
-        console.log(chapter);
-        return chapter;
+        return await chapterService.addNewChapterOfStory(id, title, numberChapter, content);
     } catch (error) {
-        return false;
         throw error;
     }
 }
 
-module.exports = {getChapterOfStory, addNewChapter, updateContentChapter, addNewChapterOfStory}
+
+
+module.exports = {
+    getChapterOfStory,
+    addNewChapter,
+    deleteChapter,
+    updateChapter,
+
+    addNewChapterOfStory,
+    checkChapterExist,
+    // addNewChapters
+}
