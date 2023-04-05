@@ -361,17 +361,20 @@
                                     <td>{{this.title}}<br>
                                         <p class="small">Tác giả: {{this.author}}</p>
                                     </td>
-                                    <td class="col-2 text-center"><img width="80" height="100" style="border-radius: 10px;" src="{{this.image.url}}" alt=""></td>
+                                    <td class="col-2 text-center"><img width="80" height="100"
+                                            style="border-radius: 10px;" src="{{this.image.url}}" alt=""></td>
                                     <td class="col-2">{{this.category.title}}</td>
                                     <td class="col-2 position-relative">
                                         <div class="position-absolute button-custom">
                                             <button type="button" class="btn btn-outline-danger mx-auto"
                                                 onclick="confirmDelete(`{{this._id}}`, `{{this.chapter}}`, `{{this.image.name}}`)">Xóa</button>
-                                            <a href="/cpanel/manga/{{this._id}}/detailmanga/edit" class="btn btn-outline-primary mx-auto" tabindex="-1" role="button" aria-disabled="true">Chi tiết</a>
+                                            <a href="/cpanel/manga/{{this._id}}/detailmanga/edit"
+                                                class="btn btn-outline-primary mx-auto" tabindex="-1" role="button"
+                                                aria-disabled="true">Chi tiết</a>
                                         </div>
                                     </td>
                                 </tr>
-                            
+
                                 {{/each}}
 
                             </tbody>
@@ -390,7 +393,7 @@
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>
-        
+
 <script>
     const convertDate = (unixTimes) => {
         return new Date(unixTimes).getTime();
