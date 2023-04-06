@@ -56,17 +56,13 @@ const updateChapter = async (id, title, chapter_index, content) => {
     }
 }
 
-const checkChapterExist = async (id, index) => {
+const getDetailChapter = async (id) => {
     try {
-        var chapters = await chapterModel.findById(id);
-        var detailChapter = chapters.detailChapter;
-        var result = detailChapter.find(item => {
-            return item.numberChapter == index;
-        })
-        return result;
+        let chapters = await chapterModel.findById(id)
+            .populate('category');;
+        return chapters;
     } catch (error) {
-        console.log(error);
-        return true;
+        throw error;
     }
 }
 
@@ -118,5 +114,5 @@ module.exports = {
     updateChapter,
 
     addNewChapterOfStory,
-    checkChapterExist,
+    getDetailChapter,
 }

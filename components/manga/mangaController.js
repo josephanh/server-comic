@@ -23,13 +23,6 @@ const deleteManga = async (id) => {
     }
 }
 
-const getMagaById = async (id) => {
-    try {
-        return await mangaService.getMagaById(id);
-    } catch (error) {
-        throw error;
-    }
-}
 const getMagaByIdWeb = async (id) => {
     try {
         return await mangaService.getMagaByIdWeb(id);
@@ -37,6 +30,16 @@ const getMagaByIdWeb = async (id) => {
         throw error;
     }
 }
+
+// danh cho mobile
+const getMagaByIdMobile = async (id) => {
+    try {
+        return await mangaService.getMagaByIdMobile(id);
+    } catch (error) {
+        throw error;
+    }
+}
+
 const updateMangaById = async (id, title, author, image, describe, reader, liked, category) => {
     try {
         return await mangaService.updateMangaById(id, title, author, image, describe, reader, liked, category)
@@ -44,15 +47,20 @@ const updateMangaById = async (id, title, author, image, describe, reader, liked
         console.log('Update manga error: ',error);
     }
 }
-const getMangaByQuery = async (query) => {
-
+const getMangaByQuery = async (keywords) => {
+    try {
+        return await mangaService.getMangaByQuery(keywords);
+    } catch (error) {
+        throw error;
+    }
 }
 
 module.exports = { 
     getAllManga, 
+    getMagaByIdWeb,
+    getMagaByIdMobile,
+    getMangaByQuery,
     deleteManga, 
     addNewManga, 
-    getMagaById, 
-    getMagaByIdWeb,
-    updateMangaById
+    updateMangaById,
 }

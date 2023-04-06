@@ -15,9 +15,9 @@ const schema = new Schema({
     author: {type: String},
     image: {type: Object},
     describe: {type: String},
-    reader: {type: Number},
+    reader: [{type: ObjectId, ref: 'users'}],
     
-    liked: {type: Number},
+    liked: [{type: ObjectId, ref: 'users'}],
     chapters: [{type: ObjectId, ref: 'chapter'}],
     category: {type:  String, ref: 'category'},
     dateCreated: {type: String},

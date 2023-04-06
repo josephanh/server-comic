@@ -1,3 +1,4 @@
+const categoryModel = require("../category/categoryModel");
 const mangaModel = require("./mangaModel");
 
 
@@ -17,12 +18,45 @@ const getAllManga = async () => {
 
 }
 
-const getMangaByQuery = async (query) => {
+const getMangaByQuery = async (keywords) => {
     try {
-
+        let idCategory = await categoryModel.find({title: { $regex: keywords, $options: 'i' }});
+        let query = {
+            $or: [{ title: { $regex: keywords, $options: 'i' } },
+            { 'category': { $regex: idCategory.length > 0 ? idCategory[0]._id : "", $options: 'i' } }]
+        }
+        const result = await mangaModel
+            .find(query)
+            .populate('category');
+        return result;
     } catch (error) {
         console.log('get Manga by query: ', error);
-        return false;
+        return null;
+    }
+}
+
+const getMagaByIdMobile = async (id) => {
+    try {
+        let manga = await mangaModel
+            .findOne({ _id: id })
+            .populate('category');
+        return manga;
+    } catch (e) {
+        console.log('getMangaByIdMobile', e);
+    }
+}
+
+const getMagaByIdWeb = async (id) => {
+    try {
+        let manga = await mangaModel
+            .findOne({ _id: id })
+            .populate('category')
+            .populate('chapters');
+        // manga.chapter.totalChapter = manga.chapter.detailChapter.length;
+        return manga;
+    } catch (e) {
+        console.log('getMangaById', e);
+        return null;
     }
 }
 
@@ -53,30 +87,6 @@ const deteteMangabyId = async (id) => {
     }
 }
 
-const getMagaById = async (id) => {
-    try {
-        let manga = await mangaModel.findById(id)
-            .populate('chapters')
-            .populate('category');
-        return manga;
-    } catch (e) {
-        console.log('getMangaById', e);
-    }
-}
-
-const getMagaByIdWeb = async (id) => {
-    try {
-        let manga = await mangaModel
-            .findOne({ _id: id })
-            .populate('category')
-            .populate('chapters');
-        // manga.chapter.totalChapter = manga.chapter.detailChapter.length;
-        return manga;
-    } catch (e) {
-        console.log('getMangaById', e);
-        return null;
-    }
-}
 
 const updateMangaById = async (id, title, author, image, describe, reader, liked, category) => {
     try {
@@ -108,7 +118,7 @@ module.exports = {
     getMangaByQuery,
     addNewManga,
     deteteMangabyId,
-    getMagaById,
+    getMagaByIdMobile,
     getMagaByIdWeb,
     updateMangaById
 }

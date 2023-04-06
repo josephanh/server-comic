@@ -69,14 +69,6 @@ const updateChapter = async (id, title, chapter_index, content) => {
 //     }
 // }
 
-const checkChapterExist = async (id, index) => {
-    try {
-        return await chapterService.checkChapterExist(id, index);
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-}
 
 const addNewChapterOfStory = async (id, title, numberChapter, content) => {
     try {
@@ -95,6 +87,5 @@ module.exports = {
     updateChapter,
 
     addNewChapterOfStory,
-    checkChapterExist,
     // addNewChapters
 }
