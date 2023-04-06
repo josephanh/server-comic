@@ -18,6 +18,20 @@ const getAllManga = async () => {
 
 }
 
+const getAllMangaBasic = async () => {
+    try {
+        // console.log("Tới đây rồi trước khi");
+        var result = await mangaModel
+            .find()
+            .populate('category');
+        // console.log("Tới đây rồi ",result);  
+        return result;
+    } catch (error) {
+        console.log('getAllNews', error);
+        throw error;
+    }
+
+}
 const getMangaByQuery = async (keywords) => {
     try {
         let idCategory = await categoryModel.find({title: { $regex: keywords, $options: 'i' }});
@@ -120,7 +134,8 @@ module.exports = {
     deteteMangabyId,
     getMagaByIdMobile,
     getMagaByIdWeb,
-    updateMangaById
+    updateMangaById,
+    getAllMangaBasic
 }
 
 var Data = [

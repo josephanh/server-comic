@@ -19,6 +19,16 @@ router.get('/', [authenApp], async (req, res, next) => {
         res.status(400).json({});
     }
 })
+
+router.get('/getallmanga', async (req, res, next) => {
+    try {
+        const mangas = await mangaController.getAllMangaBasic();
+        res.status(200).json(mangas);
+    } catch (error) {
+        res.status(400).json({});
+    }
+})
+
 // api lay tat ca cac truyen
 router.get('/web-sever-no-token', async (req, res, next) => {
     try {

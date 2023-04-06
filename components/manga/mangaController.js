@@ -7,6 +7,14 @@ const getAllManga = async () => {
     return await mangaService.getAllManga();
 }
 
+const getAllMangaBasic = async () => {
+    try {
+        return await mangaService.getAllMangaBasic();
+    } catch (error) {
+        throw error;
+    }
+}
+
 const addNewManga = async (title, author, describe, image, category) => {
     try {
         await mangaService.addNewManga(title, author, describe, image, category)
@@ -63,4 +71,5 @@ module.exports = {
     deleteManga, 
     addNewManga, 
     updateMangaById,
+    getAllMangaBasic
 }
