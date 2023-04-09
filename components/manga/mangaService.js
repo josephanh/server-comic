@@ -93,6 +93,22 @@ const getMangaByCategory = async (category) => {
     }
 }
 
+const getMangaByCategoryNotEqualHot = async () => {
+    try {
+        let idCategory = await categoryModel.find({ title: { $regex: "Hot", $options: 'i' } });
+        let query = {
+            category: { $ne: idCategory.length > 0 ? idCategory[0]._id : ""}
+        }
+        const result = await mangaModel
+            .find(query)
+            .populate('category');
+        return result;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
 const addNewManga = async (title, author, describe, image, category) => {
     try {
         const manga = {
@@ -210,6 +226,7 @@ module.exports = {
     updateMangaById,
     getAllMangaBasic,
     getMangaByCategory,
+    getMangaByCategoryNotEqualHot,
     likes,
     reader
 }

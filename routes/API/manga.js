@@ -56,6 +56,17 @@ router.get('/getmanga/:id', async (req, res, next) => {
     }
 })
 
+router.get('/getallmanga/notequalhot', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await mangaController.getMangaByCategoryNotEqualHot();
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return {};
+    }
+})
+
 // search manga
 // http://localhost:3000/api/manga/search?keyword=Van%20Nguyen
 router.get('/search/all', async (req, res, next) => {

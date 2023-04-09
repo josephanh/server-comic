@@ -55,7 +55,13 @@ const getMangaByCategory = async (category) => {
         throw error;
     }
 }
-
+const getMangaByCategoryNotEqualHot = async () => {
+    try {
+        return await mangaService.getMangaByCategoryNotEqualHot();
+    } catch (error) {
+        throw error;
+    }
+}
 const updateMangaById = async (id, title, author, image, describe, reader, liked, category) => {
     try {
         return await mangaService.updateMangaById(id, title, author, image, describe, reader, liked, category)
@@ -97,6 +103,7 @@ module.exports = {
     updateMangaById,
     getAllMangaBasic,
     getMangaByCategory,
+    getMangaByCategoryNotEqualHot,
     likes,
     reader
 }
