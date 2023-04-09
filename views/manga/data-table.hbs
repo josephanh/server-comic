@@ -344,7 +344,7 @@
                         <h5 class="card-title">Danh sách truyện</h5>
 
                         <!-- Default Table -->
-                        <table class="table">
+                        <table class="table" id="sortTable">
                             <thead>
                                 <tr>
                                     {{!-- <th scope="col" class="col-1">id</th> --}}
@@ -358,8 +358,11 @@
                                 {{#each data}}
                                 <tr>
                                     {{!-- <th scope="row">{{this._id}}</th> --}}
-                                    <td>{{this.title}}<br>
+                                    <td>
+                                        <div class="fw-semibold">{{this.title}}</div>
                                         <p class="small">Tác giả: {{this.author}}</p>
+                                        <div class="small">Likes: {{this.liked.length}}</div>
+                                        <div class="small">Lượt đọc: {{this.reader.length}}</d>
                                     </td>
                                     <td class="col-2 text-center"><img width="80" height="100"
                                             style="border-radius: 10px;" src="{{this.image.url}}" alt=""></td>
@@ -437,4 +440,6 @@
                 }
             });
     }
+
+    $('#sortTable').DataTable();
 </script>

@@ -11,5 +11,13 @@ const register = async (email, password, name) => {
     }
 }
 
+const bookmark = async (idUser, idStory) => {
+    try {
+        return await userService.bookmark(idUser, idStory);
+    } catch (error) {
+        throw error;
+    }
+}
 
-module.exports = { login, register }
+
+module.exports = { login, register, bookmark }

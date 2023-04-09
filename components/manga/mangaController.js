@@ -48,6 +48,14 @@ const getMagaByIdMobile = async (id) => {
     }
 }
 
+const getMangaByCategory = async (category) => {
+    try {
+        return await mangaService.getMangaByCategory(category);
+    } catch (error) {
+        throw error;
+    }
+}
+
 const updateMangaById = async (id, title, author, image, describe, reader, liked, category) => {
     try {
         return await mangaService.updateMangaById(id, title, author, image, describe, reader, liked, category)
@@ -63,6 +71,22 @@ const getMangaByQuery = async (keywords) => {
     }
 }
 
+const likes = async (idUser, idStory) => {
+    try {
+        return await mangaService.likes(idUser, idStory);
+    } catch (error) {
+        throw error;
+    }
+}
+
+const reader = async (idUser, idStory) => {
+    try {
+        return await mangaService.reader(idUser, idStory);
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = { 
     getAllManga, 
     getMagaByIdWeb,
@@ -71,5 +95,8 @@ module.exports = {
     deleteManga, 
     addNewManga, 
     updateMangaById,
-    getAllMangaBasic
+    getAllMangaBasic,
+    getMangaByCategory,
+    likes,
+    reader
 }

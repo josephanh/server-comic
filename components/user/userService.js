@@ -2,8 +2,8 @@ const userModel = require('./userModel');
 const bcryptjs = require('bcryptjs')
 const login = async (email, password) => {
     try {
-        let user = await userModel.findOne({email: email});
-        if(user) {
+        let user = await userModel.findOne({ email: email });
+        if (user) {
             let check = bcryptjs.compareSync(password, user.password);
             return check ? user : false;
         }
@@ -20,7 +20,7 @@ const register = async (email, password, name) => {
         if (!user) {
             var salt = bcryptjs.genSaltSync(10);
             var hash = bcryptjs.hashSync(password, salt);
-            const newUser = { email, password: hash, name, role: 1 };
+            const newUser = { email, password: hash, name, role: 1, avatar: {name: 'no-image', url: ""}};
             console.log(newUser);
             await userModel.create(newUser);
             return true;
@@ -31,7 +31,35 @@ const register = async (email, password, name) => {
     return false
 }
 
-module.exports = { login, register }
+const bookmark = async (idUser, idStory) => {
+    try {
+        console.log(idUser, idStory);
+        const user = await userModel.findOne(
+            { _id: idUser, bookmark: idStory },
+        )
+        console.log(user);
+        if (user) {
+            const remove = await userModel.findOneAndUpdate(
+                { _id: idUser },
+                { $pull: { bookmark: idStory } }
+            )
+            if(remove) return true;
+        } else {
+            const add = await userModel.findOneAndUpdate(
+                { _id: idUser },
+                { $push: { bookmark: idStory } }
+            )
+            if (add) return true;
+            return false;
+
+        }
+
+    }
+    catch (error) {
+
+    }
+}
+module.exports = { login, register, bookmark }
 var users = [
     {
         _id: 1,

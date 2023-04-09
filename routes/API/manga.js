@@ -20,7 +20,8 @@ router.get('/', [authenApp], async (req, res, next) => {
     }
 })
 
-router.get('/getallmanga', async (req, res, next) => {
+// mobile all manga no token no detail chapter
+router.get('/getmanga/all', async (req, res, next) => {
     try {
         const mangas = await mangaController.getAllMangaBasic();
         res.status(200).json(mangas);
@@ -28,6 +29,83 @@ router.get('/getallmanga', async (req, res, next) => {
         res.status(400).json({});
     }
 })
+// get manga by category
+router.get('/getmanga/category/:title', async (req, res, next) => {
+    try {
+        const { title } = req.params;
+        console.log(title);
+        const result = await mangaController.getMangaByCategory(title);
+        if(result) {
+            return res.status(200).json(result);
+        }
+        return res.status(200).json({});
+    } catch (error) {
+        return res.status(400).json({});
+    }
+})
+
+// api getmanga by id no detail chapter for mobile
+router.get('/getmanga/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await mangaController.getMagaByIdMobile(id);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log(error);
+        return {};
+    }
+})
+
+// search manga
+// http://localhost:3000/api/manga/search?keyword=Van%20Nguyen
+router.get('/search/all', async (req, res, next) => {
+    try {
+        const { keyword } = req.query;
+        const result = await mangaController.getMangaByQuery(keyword);
+        // if (result) {
+        //     console.log(result.category.title);
+        // }
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log('Search manga error API', error);
+        return res.status(500).json({})
+    }
+})
+
+// xu li likes
+router.post('/likes/:idStory/:idUser', async (req, res, next) => {
+    try {
+        const {idStory, idUser} = req.params;
+        const result = await mangaController.likes(idUser, idStory);
+        // console.log(result);
+        if(result) {
+            return  res.status(200).json({result});
+        }
+        return res.status(400).json({})
+    } catch (error) {
+        console.log("Likes manga API: ", error);
+        return res.status(400).json({});
+    }
+})
+// xu li reader
+router.post('/reader/:idStory/:idUser', async (req, res, next) => {
+    try {
+        const {idStory, idUser} = req.params;
+        const result = await mangaController.reader(idUser, idStory);
+        // console.log(result);
+        if(result) {
+            return  res.status(200).json({result});
+        }
+        return res.status(400).json({})
+    } catch (error) {
+        console.log("reader manga API: ", error);
+        return res.status(400).json({});
+    }
+})
+
+
+
+
 
 // api lay tat ca cac truyen
 router.get('/web-sever-no-token', async (req, res, next) => {
@@ -63,33 +141,7 @@ router.get('/:id', async (req, res, next) => {
     }
 })
 
-// api getmanga by id no detail chapter for mobile
-router.get('/getmanga/:id', async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const result = await mangaController.getMagaByIdMobile(id);
-        return res.status(200).json(result);
-    } catch (error) {
-        console.log(error);
-        return {};
-    }
-})
 
-// search manga
-// http://localhost:3000/api/manga/search?keyword=Van%20Nguyen
-router.get('/search/all', async (req, res, next) => {
-    try {
-        const { keyword } = req.query;
-        const result = await mangaController.getMangaByQuery(keyword);
-        // if (result) {
-        //     console.log(result.category.title);
-        // }
-        return res.status(200).json(result);
-    } catch (error) {
-        console.log('Search manga error API', error);
-        return res.status(500).json({})
-    }
-})
 
 
 // các API Test

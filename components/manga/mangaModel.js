@@ -15,12 +15,14 @@ const schema = new Schema({
     author: {type: String},
     image: {type: Object},
     describe: {type: String},
-    reader: [{type: ObjectId, ref: 'users'}],
+    reader: [{type: ObjectId, ref: 'user'}],
     
-    liked: [{type: ObjectId, ref: 'users'}],
+    liked: [{type: ObjectId, ref: 'user'}],
     chapters: [{type: ObjectId, ref: 'chapter'}],
     category: {type:  String, ref: 'category'},
     dateCreated: {type: String},
+    // ref: là một option để cho mongoose có thể hiểu là nó liên kết với model nào
+    // chắc là đọc theo tên của model
 });
 module.exports = mongoose.models.story || mongoose.model('story', schema);
 // story -----> stories

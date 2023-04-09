@@ -6,7 +6,10 @@ const schema = new Schema({
     name: {type: String},
     email: {type: String, unique: true, required: true},
     password: {type: String, required: true},
-    role: {type: Number, default: 1}
+    role: {type: Number, default: 1},
+    avatar: {type: Object},
+    bookmark: [{type: ObjectId, ref: 'story'}],
+
     // 1: user,
     // 100: admin
     // 1000: system
