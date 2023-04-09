@@ -115,7 +115,7 @@ router.post('/:id/detailmanga/edit', [auth.authenWeb, uploadFile.single('image')
             const downloadUrlImage = await getDownloadURL(snapshot.ref)
             // console.log(downloadUrlImage);
             body = { ...body, image: { name: fileName, url: downloadUrlImage } }
-            let image = await mangaController.getMagaById(id);
+            let image = await mangaController.getMagaByIdWeb(id);
             const desertRef = ref(storage, `${image.image.name}`);
             deleteObject(desertRef).then(() => {
                 // File deleted successfully
@@ -143,7 +143,7 @@ router.post('/add/chapter/:id', async (req, res, next) => {
         const {title, chapter_index, content} = req.body;
         console.log(id, title, chapter_index, content);
         const chapter =  await chapterController.addNewChapter(id, title, content, chapter_index);
-        return res.redirect(`/cpanel/manga/${id}/detailmanga/edit`);
+        return res.redirect(`/cpanel/manga/${id}/detailmanga/edit#chapter-form-scroll`);
     } catch (error) {
         console.log(error);
     }
