@@ -46,5 +46,17 @@ router.post('/bookmark/:idUser/:idStory', async (req, res, next) => {
         return res.status(400).json({});
     }
 } )
-
+router.get('/getbookmark/:idUser', async (req, res, next) => {
+    try {
+        const {idUser} = req.params;
+        const result = await userController.getBookmark(idUser);
+        if(result) {
+            return  res.status(200).json({result});
+        }
+        return res.status(400).json({})
+    } catch (error) {
+        console.log(error);
+        return res.status(444).json({})
+    }
+})
 module.exports = router;

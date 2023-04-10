@@ -59,7 +59,16 @@ const bookmark = async (idUser, idStory) => {
 
     }
 }
-module.exports = { login, register, bookmark }
+
+const getBookmark = async (idUser) => {
+    try {
+        return await userModel.findById(idUser);
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+module.exports = { login, register, bookmark, getBookmark }
 var users = [
     {
         _id: 1,

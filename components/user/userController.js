@@ -19,5 +19,13 @@ const bookmark = async (idUser, idStory) => {
     }
 }
 
+const getBookmark = async (idUser) => {
+    try {
+        return await userService.getBookmark(idUser);
+    } catch (error) {
+        throw error;
+    }
+}
 
-module.exports = { login, register, bookmark }
+
+module.exports = { login, register, bookmark, getBookmark }
