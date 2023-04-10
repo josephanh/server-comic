@@ -62,7 +62,7 @@ const bookmark = async (idUser, idStory) => {
 
 const getBookmark = async (idUser) => {
     try {
-        return await userModel.findById(idUser);
+        return await userModel.findById(idUser).populate('bookmark');
     } catch (error) {
         console.log(error);
         return false;
