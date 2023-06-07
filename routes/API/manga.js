@@ -122,7 +122,7 @@ router.post('/reader/:idStory/:idUser', async (req, res, next) => {
 router.get('/web-sever-no-token', async (req, res, next) => {
     try {
         const mangas = await mangaController.getAllManga();
-        res.status(200).json({ mangas });
+        res.status(200).json(mangas);
     } catch (error) {
         res.status(400).json({});
     }
@@ -131,7 +131,7 @@ router.get('/web-sever-no-token', async (req, res, next) => {
 router.get('/manga-dexuat', async (req, res, next) => {
     try {
         const mangas = await mangaController.getDexuatManga();
-        res.status(200).json({ mangas });
+        res.status(200).json(mangas);
     } catch (error) {
         res.status(400).json({});
     }
