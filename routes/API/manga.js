@@ -55,7 +55,7 @@ router.get('/getmanga/:id', async (req, res, next) => {
         return {};
     }
 })
-
+// không chứa các manga hot
 router.get('/getallmanga/notequalhot', async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -122,6 +122,15 @@ router.post('/reader/:idStory/:idUser', async (req, res, next) => {
 router.get('/web-sever-no-token', async (req, res, next) => {
     try {
         const mangas = await mangaController.getAllManga();
+        res.status(200).json({ mangas });
+    } catch (error) {
+        res.status(400).json({});
+    }
+})
+// api lay top 10 cac truyen
+router.get('/manga-dexuat', async (req, res, next) => {
+    try {
+        const mangas = await mangaController.getDexuatManga();
         res.status(200).json({ mangas });
     } catch (error) {
         res.status(400).json({});

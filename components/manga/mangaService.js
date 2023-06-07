@@ -18,6 +18,22 @@ const getAllManga = async () => {
 
 }
 
+const getDexuatManga = async () => {
+    try {
+        // console.log("Tới đây rồi trước khi");
+        var result = await mangaModel
+            .find()
+            .populate('chapters')
+            .populate('category')
+            .limit(9);
+        // console.log("Tới đây rồi ",result);  
+        return result;
+    } catch (error) {
+        console.log('getAllNews', error);
+        throw error;
+    }
+}
+
 const getAllMangaBasic = async () => {
     try {
         // console.log("Tới đây rồi trước khi");
@@ -68,7 +84,7 @@ const getMagaByIdWeb = async (id) => {
             .populate('chapters')
             .populate('reader', "name")
             .populate('liked', "name");
-            // pupulate đọc theo trường trong model
+        // pupulate đọc theo trường trong model
         // manga.chapter.totalChapter = manga.chapter.detailChapter.length;
         return manga;
     } catch (e) {
@@ -93,11 +109,12 @@ const getMangaByCategory = async (category) => {
     }
 }
 
+
 const getMangaByCategoryNotEqualHot = async () => {
     try {
         let idCategory = await categoryModel.find({ title: { $regex: "Hot", $options: 'i' } });
         let query = {
-            category: { $ne: idCategory.length > 0 ? idCategory[0]._id : ""}
+            category: { $ne: idCategory.length > 0 ? idCategory[0]._id : "" }
         }
         const result = await mangaModel
             .find(query)
@@ -228,5 +245,6 @@ module.exports = {
     getMangaByCategory,
     getMangaByCategoryNotEqualHot,
     likes,
-    reader
+    reader,
+    getDexuatManga
 }

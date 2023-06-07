@@ -7,6 +7,10 @@ const getAllManga = async () => {
     return await mangaService.getAllManga();
 }
 
+const getDexuatManga = async () => {
+    return await mangaService.getDexuatManga();
+}
+
 const getAllMangaBasic = async () => {
     try {
         return await mangaService.getAllMangaBasic();
@@ -95,6 +99,7 @@ const reader = async (idUser, idStory) => {
 
 module.exports = { 
     getAllManga, 
+    getDexuatManga,
     getMagaByIdWeb,
     getMagaByIdMobile,
     getMangaByQuery,
